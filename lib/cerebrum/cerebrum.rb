@@ -45,16 +45,18 @@ class Cerebrum
     layer_sizes = [input_size, @hidden_layers, output_size].flatten
     construct_network(layer_sizes)
 
+    iteration_errors = {}
     iterations.times do |i|
       current_iteration = i
       training_set_errors = training_set.map { |ex| train_pattern(ex[:input], ex[:output], learning_rate) }
       error = training_set_errors.inject(:+) / training_set.length
       puts "(#{i}) training error: #{error}" if (log && (i % log_period) == 0)
+      iteration_errors[current_iteration] = error if (log && (i % log_period) == 0)
 
       break if error < error_threshold
     end
 
-    { error: error, iterations: current_iteration }
+    { error: error, iterations: current_iteration, iteration_errors: iteration_errors }
   end
 
   def run(input)
