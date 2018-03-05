@@ -50,7 +50,7 @@ class Cerebrum
       current_iteration = i
       training_set_errors = training_set.map { |ex| train_pattern(ex[:input], ex[:output], learning_rate) }
       error = training_set_errors.inject(:+) / training_set.length
-      puts "(#{i}) training error: #{error}" if (log && (i % log_period) == 0)
+      # puts "(#{i}) training error: #{error}" if (log && (i % log_period) == 0)
       iteration_errors[current_iteration] = error if (log && (i % log_period) == 0)
 
       break if error < error_threshold
