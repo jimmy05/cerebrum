@@ -27,7 +27,7 @@ class Cerebrum
 
   def clever?(iteration_errors)
     return true if iteration_errors.length < 4
-    values = iteration_errors.map {|x| x.values}
+    values = iteration_errors.map {|x| x[-1]}
     error_gaps, t = [], values.length - 1
     t.times do |i|
       error_gaps << values[i] - values[i + 1]
