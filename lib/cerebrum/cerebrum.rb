@@ -25,7 +25,23 @@ class Cerebrum
     mean_squared_error(@errors[@layers])
   end
 
+  def clever?(iteration_errors)
+    return true if iteration_errors.length < 4
+    values = iteration_errors.map {|x| x.values}
+    error_gaps, t = [], values.length - 1
+    t.times do |i|
+      error_gaps << values[i] - values[i + 1]
+    end
+    error_gaps.compact!
+    if error_gaps[-1].to_s.includes('e')
+      return false
+    else
+      return true
+    end 
+  end
+
   def train(training_set, options = Hash.new)
+    clever = true
     @input_lookup_table   ||= get_input_lookup_table(training_set)
     @output_lookup_table  ||= get_output_lookup_table(training_set)
     training_set = scrub_dataset(training_set)
@@ -52,8 +68,9 @@ class Cerebrum
       error = training_set_errors.inject(:+) / training_set.length
       # puts "(#{i}) training error: #{error}" if (log && (i % log_period) == 0)
       iteration_errors[current_iteration] = error if (log && (i % log_period) == 0)
+      clever = clever?(iteration_errors)
 
-      break if error < error_threshold
+      break if error < error_threshold || clever == false
     end
 
     { error: error, iterations: current_iteration, iteration_errors: iteration_errors }
