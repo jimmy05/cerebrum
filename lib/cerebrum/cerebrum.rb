@@ -33,7 +33,7 @@ class Cerebrum
       error_gaps << values[i] - values[i + 1]
     end
     error_gaps.compact!
-    if error_gaps[-1].to_s.include? "e"
+    if error_gaps[-1].to_s.include? "e-06"
       return false
     else
       return true
